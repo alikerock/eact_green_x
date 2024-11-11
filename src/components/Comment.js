@@ -35,21 +35,24 @@ const Comment = ({commentObj, isOwener})=>{
 
   return(
     <ListGroup.Item>
-      <div className='d-flex justify-content-between'>
+      <div className='d-flex flex-column'>
         {edit ? 
           <Form onSubmit={onSubmit}>
             <Form.Group className="mb-3" controlId="comment">          
               <Form.Control type="text" value={comment} onChange={onChange} placeholder="글을 입력해주세요" />
             </Form.Group>
-            <Button variant="info" type="button" onClick={toggleEditMode}>취소</Button>
-            <Button variant="success" type="submit">입력</Button>
+            <div>
+              <Button variant="info" type="button" onClick={toggleEditMode}>취소</Button>
+              <Button variant="success" type="submit">입력</Button>
+            </div>
           </Form>
         : 
         (
           <>
             {commentObj.comment}
+            {commentObj.image && <div><img src={commentObj.image} alt="" width="100" /></div>}
             {isOwener &&            
-              <div className='d-flex gap-1'>
+              <div className='d-flex gap-1 align-self-end'>
                 <Button variant="secondary" onClick={toggleEditMode}  size="sm">수정</Button>
                 <Button variant="danger" onClick={deleteComment}  size="sm">삭제</Button>
               </div> 
