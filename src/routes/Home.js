@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import { Button } from 'react-bootstrap';
 import {db} from "../firebase";
-import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs, onSnapshot  } from "firebase/firestore"; 
+import { collection, addDoc, serverTimestamp, query, orderBy, limit,  onSnapshot} from "firebase/firestore"; 
 import ListGroup from 'react-bootstrap/ListGroup';
 import Comment from '../components/Comment';
-import { getStorage, ref } from "firebase/storage";
+import { getStorage, ref, uploadString, getDownloadURL  } from "firebase/storage";
 import { v4 as uuidv4 } from 'uuid';
 
 
@@ -47,17 +47,27 @@ const Home = ({userObj})=>{
   }
   const onSubmit = async (e)=>{
     e.preventDefault();
-    console.log(comment, '실행');
-    try {
-      const docRef = await addDoc(collection(db, "comments"), {
-        comment:comment,
-        date:serverTimestamp(),
-        uid:userObj
-      });
-      document.querySelector('#comment').value='';
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
+    const storageRef = ref(storage, `${userObj}/${uuidv4()}`);
+
+    uploadString(storageRef, attachment, 'data_url').then(async(snapshot) => {
+      const imageURL = await getDownloadURL(storageRef);
+
+      try {
+        await addDoc(collection(db, "comments"), {
+          comment:comment,
+          date:serverTimestamp(),
+          uid:userObj,
+          image:imageURL
+        });
+        document.querySelector('#comment').value='';
+        setAttachment('');
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+
+    });
+
+   
 
   }
   const onFileChange = (e)=>{
