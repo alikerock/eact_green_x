@@ -50,12 +50,24 @@ const Home = ({userObj})=>{
     }
 
   }
-
+  const onFileChange = (e)=>{
+    console.log(e.target.files[0]);
+    /*
+    const {target:{files}} = e;
+    const theFile = files[0]
+    */
+    const theFile = e.target.files[0];
+    
+  }
   return(
     <div className="container">
       <Form onSubmit={onSubmit}>
         <Form.Group className="mb-3" controlId="comment">          
           <Form.Control type="text" onChange={onChange} placeholder="글을 입력해주세요" />
+        </Form.Group>
+        <Form.Group controlId="formFileSm" className="mb-3">
+          <Form.Label>이미지</Form.Label>
+          <Form.Control type="file" accept="image/*" size="sm" onChange={onFileChange} />
         </Form.Group>
         <Button variant="primary" type="submit">입력</Button>
       </Form>
