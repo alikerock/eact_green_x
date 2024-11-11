@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import { Button } from 'react-bootstrap';
 import {db} from "../firebase";
-import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs } from "firebase/firestore"; 
+import { collection, addDoc, serverTimestamp, query, orderBy, limit, getDocs, onSnapshot  } from "firebase/firestore"; 
 import ListGroup from 'react-bootstrap/ListGroup';
 import Comment from '../components/Comment';
 
@@ -11,23 +11,17 @@ const Home = ({userObj})=>{
   const [comments, setComments] = useState([]); //조회된 글 배열
   
   const getComments = async ()=>{
-    const q = query(collection(db, "comments"), orderBy("date", "desc"), limit(5));
-
-    const querySnapshot = await getDocs(q);
     /*
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      const commentObj = {
-        ...doc.data(),
-        id:doc.id
-      }
-      setComments(prev=>[commentObj, ...prev]);
-    });
-    */
-
-   //const commentArr = querySnapshot.docs.map(doc=>{return {...doc.data(), id:doc.id}})
-   const commentArr = querySnapshot.docs.map(doc=>({...doc.data(), id:doc.id}))
-   setComments(commentArr);
+    const q = query(collection(db, "comments"), orderBy("date", "desc"), limit(5));
+    const querySnapshot = await getDocs(q);
+    const commentArr = querySnapshot.docs.map(doc=>({...doc.data(), id:doc.id}))
+    setComments(commentArr);
+   */
+   const q = query(collection(db, "comments"), orderBy("date", "desc"), limit(5));
+   onSnapshot(q, (querySnapshot) => {
+    const commentArr = querySnapshot.docs.map(doc=>({...doc.data(), id:doc.id}))
+    setComments(commentArr);
+   });
 
   }
 
@@ -50,7 +44,7 @@ const Home = ({userObj})=>{
         date:serverTimestamp(),
         uid:userObj
       });
-      console.log("Document written with ID: ", docRef.id);
+      document.querySelector('#comment').value='';
     } catch (e) {
       console.error("Error adding document: ", e);
     }
