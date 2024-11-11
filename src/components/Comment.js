@@ -4,15 +4,23 @@ import { Button } from 'react-bootstrap';
 import { doc, deleteDoc, updateDoc} from "firebase/firestore";
 import { db } from '../firebase';
 import Form from 'react-bootstrap/Form';
+import { getStorage, ref, deleteObject } from "firebase/storage";
 
 const Comment = ({commentObj, isOwener})=>{
   const [edit, setEdit] = useState(false);
   const [comment, setComment] = useState(commentObj.comment); //이전 글을 초기값
 
   const deleteComment = async ()=>{ 
+    const storage = getStorage();
     const deleteConfirm = window.confirm('정말 삭제할까요?');
     if(deleteConfirm){
       await deleteDoc(doc(db, "comments", commentObj.id));
+
+      // Create a reference to the file to delete
+      const storageRef = ref(storage, commentObj.image);
+
+      // Delete the file
+      deleteObject(storageRef);
     }
   }
   const toggleEditMode = ()=>{
