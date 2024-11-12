@@ -48,10 +48,16 @@ const Profile = ()=>{
       <div className="profile">
         <img src={profile} alt=""/>
       </div>           
-        <input type="file" className="hidden" accept="image/*" name="profile" id="profile"  onChange={updateLogo}/>    
-        <label className='btn btn-primary' htmlFor="profile">프로필 이미지 변경</label>
+        <input type="file" className="hidden" accept="image/*" name="profile" id="profile"  onChange={updateLogo}/>
+        <div className='d-flex gap-1 mt-3'>
+          <label className='btn btn-primary' htmlFor="profile">프로필 이미지 변경</label>
+          <Button variant="primary" onClick={onLogoutClick}>로그아웃</Button>
+        </div>    
       <hr/>      
-      <Button variant="primary" onClick={onLogoutClick}>로그아웃</Button>
+      <h3>My Comment List</h3>
+      <ul className="commentList">
+        
+      </ul>
     </div>
   )
 }
