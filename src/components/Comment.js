@@ -67,9 +67,7 @@ const Comment = ({commentObj, isOwener})=>{
             }
           </>
           )   
-        }
-
-   
+        }   
       </div>
     </ListGroup.Item> 
   )
